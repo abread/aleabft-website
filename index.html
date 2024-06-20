@@ -20,6 +20,16 @@
         cite {
             font-size: inherit;
         }
+        #alea-anim {
+            max-width: 100ch;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (prefers-color-scheme: dark) {
+            #alea-anim video {
+                opacity: 0.95;
+            }
+        }
     </style>
 
     <title>Alea-BFT</title>
@@ -45,7 +55,7 @@
     <h3>What is Alea-BFT?</h3>
     <p>
         Alea-BFT is a BFT (byzantine-fault tolerant) consensus protocol designed for simplicity.
-        Unlike other protocols such as <cite><a href="https://entethalliance.org/specs/qbft/v1/">QBFT</a></cite>, which use timeouts to guarantee liveness, Alea is asynchronous.
+        Unlike other partially-synchronous protocols such as <cite><a href="https://entethalliance.org/specs/qbft/v1/">QBFT</a></cite>, which use timeouts to guarantee liveness, Alea is asynchronous.
         Thus, Alea-BFT closely follows network performance while requiring little to no tuning and not stalling on crash faults.
     </p>
 
@@ -55,7 +65,7 @@
     </p>
     <p>
         This primitive can be leveraged to build solutions to two other important (and equivalent) problems: total-order broadcast and state machine replication.
-        Alea-BFT is technically a total-order broadcast protocol, meaning it concerns itself with deciding a globally-consistent order for an ever-growing set of messages.
+        Alea-BFT is technically a total-order broadcast protocol, meaning it concerns itself with deciding a globally consistent order for an ever-growing set of messages.
     </p>
     <p>
         We are particularly concerned with BFT consensus, which tolerates byzantine (arbitrary) faults.
@@ -64,15 +74,15 @@
 
     <h3>Wait, I thought consensus was impossible in asynchronous networks!</h3>
     <p>
-        It is true that consensus, including BFT consensus, is impossible in an asynchonous network if we admit the existence of faults but only if we restrict ourselves to deterministic protocols.
+        It is true that consensus, including BFT consensus, is impossible in an asynchronous network if we admit the existence of faults, but only if we restrict ourselves to deterministic protocols.
     </p>
     <p>
         Asynchronous consensus protocols like Alea-BFT exploit <em>randomization</em> instead. Concretely, they reframe the termination property of consensus to be probabilistic: consensus terminates with probability 1.
     </p>
     <p>
         This class of protocols was known when the <cite><a href="https://dl.acm.org/doi/10.1145/3149.214121">FLP impossibility</a></cite> was published.
-        Early solutions were simple, arguably simpler than their timeout-reliant counterparts but incurred very high communications.
-        Later, <cite><a href="https://dl.acm.org/doi/10.1145/2976749.2978399">HoneyBadger-BFT</a></cite> begun a new family of randomized protocols that conquered this inefficiency but still failed to see widespread adoption, plausibly due to their complexity.
+        Early solutions were simple, arguably simpler than their timeout-reliant counterparts, but incurred very high communications.
+        Later, <cite><a href="https://dl.acm.org/doi/10.1145/2976749.2978399">HoneyBadger-BFT</a></cite> began a new family of randomized protocols that conquered this inefficiency but still failed to see widespread adoption, plausibly due to their complexity.
         Alea-BFT brings the HoneyBadger-BFT family of protocols and early solutions together to form a simple but efficient protocol.
     </p>
     </section>
@@ -80,14 +90,23 @@
     <section>
     <h3 id="how-alea-works">How Alea-BFT works</h3>
     <p>
-        Alea-BFT brings the insight from traditional consensus protocols of centralizing work on a leader.
-        However, it sidesteps the challenges associated with this approach (i.e. sensitivity to performance attacks) by only tasking the leaders with conveying their own proposals to the remaining processes.
+        Alea-BFT brings the insight of centralizing work on a leader from partially-synchronous consensus protocols.
+        However, it sidesteps the challenges associated with this approach (i.e. sensitivity to performance attacks) by only tasking the leaders with conveying their own (locally-ordered) proposals to the remaining processes, leaving the global ordering decision to a leaderless component.
     </p>
     <p>
-        Concretely, each leader appends its proposals to a queue, which is replicated to other nodes using a verifiable consistent broadcast.
-        Simultaneously, an agreement component constantly tries to deliver the heads of these queues.
-        This agreement component progresses in rounds and at every round it 1) picks a queue/proposer and 2) has all processes vote whether to deliver its head using a binary agreement primitive.
+        Concretely, the protocol is divided into a broadcast component and an agreement component connected by a set of first-in-first-out queues.
+        The broadcast component pushes new transactions to the queues using a consistent broadcast primitive: each process appends transactions to its respective queue present on all processes.
+        Simultaneously, the agreement component progresses in rounds and constantly tries to pop and deliver the heads of these queues.
+        At every round, it 1) picks a queue/proposer and 2) has all processes vote on whether to deliver its head using a binary agreement primitive.
+        Lastly, if the agreement component votes to deliver a queue whose head is not locally present, the affected process uses a simple recovery protocol to fetch this value from another process.
     </p>
+
+    <div id="alea-anim" class="container">
+        <video autoplay muted controls loop preload>
+            <!--<source src="alea-anim-4k.webm" type="video/webm" media="(min-width: 3840px)" /> -->
+            <source src="alea-anim-1080p.mp4" type="video/mp4" />
+        </video>
+    </div>
 
     </section>
 
@@ -148,7 +167,7 @@
             <br>
             Video: <a href="https://www.youtube.com/watch?v=54cDdLn2_ME">YouTube</a>
             <br>
-            Slides: <a href="javascript:alert('TODO')">Google Slides</a> <mark class="comment">AB: ???</mark>
+            Slides: <a href="javascript:alert('TODO')">Google Slides</a> <mark class="comment">AB: publica-se? (PDF fica partido sem trabalho mas podemos clonar os slides, tirar as anotações e  slides escondidos, e partilhar)</mark>
         </li>
     </ul>
 
@@ -167,11 +186,11 @@
                 <td><a href="https://github.com/diogoantunes25/AleaBFT">Alea-BFT Prototype</a></td>
                 <td>Research prototype implementation.</td>
                 <td>Java</td>
-                <td><mark class="comment">AB: blank or we pick one?</mark></td>
+                <td><mark class="comment">AB: deixar em branco ou escolhemos uma?</mark></td>
             </tr>
             <tr>
                 <td><a href="https://github.com/MatheusFranco99/ssv">SSV + Alea-BFT</a></td>
-                <td>Fork of distributed Ethereum validator SSV with Alea-BFT for consensus (in the process of being upstreamed).<mark class="comment">AB: TODO: confirm</mark></td>
+                <td>Fork of distributed Ethereum validator SSV with Alea-BFT for consensus (in the process of being upstreamed).<mark class="comment">AB: TODO: confirmar</mark></td>
                 <td>Go</td>
                 <td>GPL 3.0</td>
             </tr>
@@ -188,9 +207,13 @@
     <mark class="comment">AB: TODO: logos INESC-ID/IST/?</mark>
 
     <footer>
-        <p>Did you build/publish something new? <a href="https://github.com/abread/aleabft-website/blob/main/index.html">Edit this page on GitHub</a></p><!-- TODO: update with final link -->
+        <p>
+            Caught a typo? Want to show off your new awesome Alea-BFT usecase?
+            <br>
+            <a href="https://github.com/abread/aleabft-website/blob/main/index.html">Edit this page on GitHub</a><!-- TODO: update with final link -->
+        </p>
 
-        <div>This work is licensed under a <cite><a href="">Creative Commons ... License</a></cite> <mark class="comment">AB: ???</mark></div>
+        <div>This work is licensed under a <cite><a href="">Creative Commons ... License</a></cite> <mark class="comment">AB: ?</mark></div>
         <div>This website was inspired by the <cite><a href="https://raft.github.io/">Raft</a></cite> and <cite><a href="https://fpaxos.github.io/">Flexible Paxos</a></cite> protocol websites.</div>
     </footer>
 
