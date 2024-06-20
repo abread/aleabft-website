@@ -95,7 +95,7 @@
     </p>
     <p>
         Concretely, the protocol is divided into a broadcast component and an agreement component connected by a set of first-in-first-out queues.
-        The broadcast component pushes new transactions to the queues using a consistent broadcast primitive: each process appends transactions to its respective queue present on all processes.
+        The broadcast component pushes new requests/transactions (fruits in the animation) to the queues using a consistent broadcast primitive: each process appends requests to its respective queue present on all processes.
         Simultaneously, the agreement component progresses in rounds and constantly tries to pop and deliver the heads of these queues.
         At every round, it 1) picks a queue/proposer and 2) has all processes vote on whether to deliver its head using a binary agreement primitive.
         Lastly, if the agreement component votes to deliver a queue whose head is not locally present, the affected process uses a simple recovery protocol to fetch this value from another process.
