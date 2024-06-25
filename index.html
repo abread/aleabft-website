@@ -40,7 +40,7 @@
 </head>
 <body>
     <header>
-        <h1>Alea-BFT<br><small>Practical BFT Consensus</small></h1>
+        <h1>Alea-BFT<br><small>Practical Asynchronous Byzantine Fault Tolerance</small></h1>
 
         <nav>
             <a href="#how-alea-works">How Alea-BFT works</a>
@@ -54,9 +54,9 @@
     <section>
     <h3>What is Alea-BFT?</h3>
     <p>
-        Alea-BFT is a BFT (byzantine-fault tolerant) consensus protocol designed for simplicity.
-        Unlike other partially-synchronous protocols such as <cite><a href="https://entethalliance.org/specs/qbft/v1/">QBFT</a></cite>, which use timeouts to guarantee liveness, Alea is asynchronous.
-        Thus, Alea-BFT closely follows network performance while requiring little to no tuning and not stalling on crash faults.
+        Alea-BFT is a BFT (Byzantine-fault tolerant) consensus protocol designed for performance and simplicity.
+        Unlike partially-synchronous protocols such as <cite><a href="https://pmg.csail.mit.edu/papers/osdi99.pdf">PBFT</a></cite> or <cite><a href="https://entethalliance.org/specs/qbft/v1/">QBFT</a></cite>, which use timeouts to guarantee liveness, Alea is asynchronous, i.e., it does not use predefined timeouts to estimate when a machine might be unresponsive.
+        Thus, Alea-BFT closely follows network performance while requiring no tuning of timeout values. Very importantly, Alea-BFT is able to make fast progress, even when the participants or the network are not performing as expected.
     </p>
 
     <h3>What is consensus?</h3>
@@ -69,7 +69,7 @@
     </p>
     <p>
         We are particularly concerned with BFT consensus, which tolerates byzantine (arbitrary) faults.
-        Concretely, we demand that consensus is reached among the correct processes even if some (bounded) amount of processes fail arbitrarily.
+        Concretely, we demand that consensus is reached among the correct processes even if some (bounded) amount of processes fail arbitrarily. The BFT consensus problems is very relevant because it is the core component of important classes of systems, namely blockchains and cryptocurrencies.
     </p>
 
     <h3>Wait, I thought consensus was impossible in asynchronous networks!</h3>
@@ -77,13 +77,12 @@
         It is true that consensus, including BFT consensus, is impossible in an asynchronous network if we admit the existence of faults, but only if we restrict ourselves to deterministic protocols.
     </p>
     <p>
-        Asynchronous consensus protocols like Alea-BFT exploit <em>randomization</em> instead. Concretely, they reframe the termination property of consensus to be probabilistic: consensus terminates with probability 1.
+        Asynchronous consensus protocols like Alea-BFT exploit <em>randomization</em> instead. Concretely, they reframe the termination property of consensus to be probabilistic: consensus terminates with a probability that approaches 1.
     </p>
     <p>
         This class of protocols was known when the <cite><a href="https://dl.acm.org/doi/10.1145/3149.214121">FLP impossibility</a></cite> was published.
-        Early solutions were simple, arguably simpler than their timeout-reliant counterparts, but incurred very high communications.
-        Later, <cite><a href="https://dl.acm.org/doi/10.1145/2976749.2978399">HoneyBadger-BFT</a></cite> began a new family of randomized protocols that conquered this inefficiency but still failed to see widespread adoption, plausibly due to their complexity.
-        Alea-BFT brings the HoneyBadger-BFT family of protocols and early solutions together to form a simple but efficient protocol.
+        Early solutions were very elegant, but incurred in a very high communication cost.
+        Alea-BFT brings together insights from early solutions, more modern asynchronous protocols, and partially-synchronous BFT protocols with fast leader rotation, to form an elegant and efficient protocol.
     </p>
     </section>
 
