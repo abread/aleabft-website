@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="simple.min.css" />
     <style>
         body {
+            /* allow body to be wider */
             grid-template-columns: 1fr 90% 1fr;
         }
         mark.comment {
@@ -18,23 +19,35 @@
             border-top: none;
         }
         cite {
+            /* SimpleCSS uses a smaller font: seems disrepectful to other works */
             font-size: inherit;
         }
+
         #alea-anim {
             max-width: 100ch;
             margin-left: auto;
             margin-right: auto;
         }
         @media (prefers-color-scheme: dark) {
+            /* SimpleCSS turns the opacity down in dark mode: it's a cool idea, but it seemed too much for our video */
             #alea-anim video {
                 opacity: 0.95;
             }
         }
+
         .ack {
             text-align: center;
         }
         .ack img {
             width: min(30ch, 75%);
+        }
+
+        /* when wide enough, show all nav items with the same width */
+        @media (width > 720px) {
+            nav {
+                display: inline-grid;
+                grid-template-columns: 1fr 1fr 1fr;
+            }
         }
 
     </style>
