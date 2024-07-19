@@ -19,7 +19,7 @@
             border-top: none;
         }
         cite {
-            /* SimpleCSS uses a smaller font: seems disrepectful to other works */
+            /* SimpleCSS uses a smaller font */
             font-size: inherit;
         }
 
@@ -66,6 +66,7 @@
             <a href="#how-alea-works">How Alea-BFT works</a>
             <a href="https://arxiv.org/abs/2202.02071">Alea-BFT Paper</a>
             <a href="#code">Code</a>
+            <a href="#contrib">Contributors</a>
         </nav>
     </header>
 
@@ -76,33 +77,32 @@
     <p>
         Alea-BFT is a BFT (Byzantine-fault tolerant) consensus protocol designed for performance and simplicity.
         Unlike partially-synchronous protocols such as <cite><a href="https://pmg.csail.mit.edu/papers/osdi99.pdf">PBFT</a></cite> or <cite><a href="https://entethalliance.org/specs/qbft/v1/">QBFT</a></cite>, which use timeouts to guarantee liveness, Alea is asynchronous, i.e., it does not use predefined timeouts to estimate when a machine might be unresponsive.
-        Thus, Alea-BFT closely follows network performance while requiring no tuning of timeout values. Very importantly, Alea-BFT is able to make fast progress, even when the participants or the network are not performing as expected.
+        Thus, Alea-BFT closely follows network performance while requiring no tuning of timeout values. Very importantly, Alea-BFT is able to make fast progress, even when the participants or the network are not behaving or performing as expected.
     </p>
 
     <h3>What is consensus?</h3>
     <p>
-        Consensus is an important problem in distributed systems. It consists in having a set of processes propose values and have them all agree on a single proposal.
+        Consensus is an important problem in distributed systems. It consists in having a set of processes propose values and and then agree on a single proposal.
     </p>
     <p>
         This primitive can be leveraged to build solutions to two other important (and equivalent) problems: total-order broadcast and state machine replication.
-        Alea-BFT is technically a total-order broadcast protocol, meaning it concerns itself with deciding a globally consistent order for an ever-growing set of messages.
+        (Alea-BFT is designed as a total-order broadcast protocol, but can be easily adapted to the other, related problems.) 
     </p>
     <p>
-        We are particularly concerned with BFT consensus, which tolerates byzantine (arbitrary) faults.
-        Concretely, we demand that consensus is reached among the correct processes even if some (bounded) amount of processes fail arbitrarily. The BFT consensus problems is very relevant because it is the core component of important classes of systems, namely blockchains and cryptocurrencies.
+        The focus of Alea is on BFT consensus, i.e., achieving consensus while tolerating Byzantine (arbitrary) faults.
+        Concretely, we require that consensus is reached among the correct processes even if some (bounded) amount of processes fail arbitrarily. The BFT consensus problems is very relevant because it is the core component of important classes of systems, namely blockchains and cryptocurrencies.
     </p>
 
     <h3>Wait, I thought consensus was impossible in asynchronous networks!</h3>
     <p>
-        It is true that consensus, including BFT consensus, is impossible in an asynchronous network if we admit the existence of faults, but only if we restrict ourselves to deterministic protocols.
+        It is true that consensus, including BFT consensus, is impossible in an asynchronous network if we admit the existence of even a single benign fault (a simple machine crash). (This result is known as the <cite><a href="https://dl.acm.org/doi/10.1145/3149.214121">FLP impossibility</a></cite>.) However, this only holds if we restrict ourselves to deterministic protocols.
     </p>
     <p>
         Asynchronous consensus protocols like Alea-BFT exploit <em>randomization</em> instead. Concretely, they reframe the termination property of consensus to be probabilistic: consensus terminates with a probability that approaches 1.
     </p>
     <p>
-        This class of protocols was known when the <cite><a href="https://dl.acm.org/doi/10.1145/3149.214121">FLP impossibility</a></cite> was published.
-        Early solutions were very elegant, but incurred in a very high communication cost.
-        Alea-BFT brings together insights from early solutions, more modern asynchronous protocols, and partially-synchronous BFT protocols with fast leader rotation, to form an elegant and efficient protocol.
+        Randomized consensus has been studied for decades, and the initial solutions were very elegant, but incurred in a very high communication cost.
+        Alea-BFT brings together insights from these early solutions, more modern asynchronous protocols, and partially-synchronous BFT protocols with fast leader rotation, to form an elegant and efficient protocol.
     </p>
     </section>
 
@@ -220,8 +220,17 @@
             </tr>
         </tbody>
     </table>
+            <h3 id="contrib">Contributors</h3>
+Alea-BFT is the joint effort of the following students and faculty at <a href="https://tecnico.ulisboa.pt/en">IST (Técnico-ULisboa)</a> and its computer science research lab, <a href="https://www.inesc-id.pt/>INESC-ID</a>.
+<ul>
+    <li>Afonso Oliveira                                                                                                                                                                               
+    <li>André Breda
+    <li>Diogo S. Antunes
+    <li>Diogo Silva Santos                                                                                                                                                                              
+    <li>Matheus Franco
+    <li>Henrique Moniz and Rodrigo Rodrigues (faculty).                                                                                                                                                                               
     </section>
-
+   </ul>
     <div class="ack">
         <p>
             This research is supported by the Portuguese Foundation for Science and Technology (FCT).
