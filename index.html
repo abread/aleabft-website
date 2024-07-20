@@ -110,13 +110,13 @@
     <h3 id="how-alea-works">How Alea-BFT works</h3>
     <p>
         Alea-BFT brings from partially-synchronous consensus protocols the insight of centralizing work on a rotating leader node.
-        However, it needs to address several challenges associated with this approach, namely the reliance on a single node, which must be replaced upon failure. This is achieved by rotating the leader after consensus slot, and only tasking the leaders with conveying their own (locally-ordered) proposals to the remaining processes, leaving the global ordering decision to a leaderless component.
+        However, it needs to address several challenges associated with this approach, namely the reliance on a single node, which must be replaced upon failure. This is achieved by rotating the leader after each consensus attempt, and only tasking the leaders with conveying their own (locally-ordered) proposals to the remaining processes, leaving the global ordering decision to a leaderless component.
     </p>
     <p>
         In more detail, the protocol is divided into a broadcast component and an agreement component, connected by a set of FIFO queues.
         The broadcast component pushes new requests (depicted as fruits in the animation) to the queues using a consistent broadcast primitive. Then, each process appends requests to its respective queue.
-        In parallel, the agreement component constantly tries to pop and deliver the heads of these queues. To this end, this component uses a randomized binary agreement primitive to decide if it is safe to conclude a consensus instance.
-        Lastly, we require a recovery protocol to fetch missing requests in case a consensus instance succeeds at a node that did not receive the broadcast value.
+        In parallel, the agreement component constantly tries to pop and deliver the heads of these queues. To this end, this component uses a randomized binary agreement primitive to decide if it is safe to conclude a higher-level consensus instance.
+        Finally, a recovery protocol fetches missing requests in case the agreement succeeds at a node that did not receive the broadcast value.
     </p>
 
     <div id="alea-anim" class="container">
