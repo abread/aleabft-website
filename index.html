@@ -90,34 +90,33 @@
     </p>
     <p>
         The focus of Alea is on BFT consensus, i.e., achieving consensus while tolerating Byzantine (arbitrary) faults.
-        Concretely, we require that consensus is reached among the correct processes even if some (bounded) amount of processes fail arbitrarily. The BFT consensus problems is very relevant because it is the core component of important classes of systems, namely blockchains and cryptocurrencies.
+        Concretely, we require that consensus is reached among the correct processes even if some (bounded) amount of processes fail arbitrarily. BFT consensus problems is very relevant because it is the core component of important classes of systems, namely blockchains and cryptocurrencies.
     </p>
 
     <h3>Wait, I thought consensus was impossible in asynchronous networks!</h3>
     <p>
-        It is true that consensus, including BFT consensus, is impossible in an asynchronous network if we admit the existence of even a single benign fault (a simple machine crash). (This result is known as the <cite><a href="https://dl.acm.org/doi/10.1145/3149.214121">FLP impossibility</a></cite>.) However, this only holds if we restrict ourselves to deterministic protocols.
+        Yes, consensus is impossible in an asynchronous network if we admit the existence of even a single benign fault (a simple machine crash). (This result is known as the <cite><a href="https://dl.acm.org/doi/10.1145/3149.214121">FLP impossibility</a></cite>.) However, this only holds if we restrict ourselves to deterministic protocols.
     </p>
     <p>
         Asynchronous consensus protocols like Alea-BFT exploit <em>randomization</em> instead. Concretely, they reframe the termination property of consensus to be probabilistic: consensus terminates with a probability that approaches 1.
     </p>
     <p>
-        Randomized consensus has been studied for decades, and the initial solutions were very elegant, but incurred in a very high communication cost.
-        Alea-BFT brings together insights from these early solutions, more modern asynchronous protocols, and partially-synchronous BFT protocols with fast leader rotation, to form an elegant and efficient protocol.
+        Randomized consensus has been studied for decades, and the initial solutions were very elegant, but incurred in a high communication cost.
+        Alea-BFT brings together techniques from these early solutions, from modern asynchronous protocols, and from partially-synchronous BFT protocols, combining them to form an elegant and efficient protocol.
     </p>
     </section>
 
     <section>
     <h3 id="how-alea-works">How Alea-BFT works</h3>
     <p>
-        Alea-BFT brings the insight of centralizing work on a leader from partially-synchronous consensus protocols.
-        However, it sidesteps the challenges associated with this approach (i.e. sensitivity to performance attacks) by only tasking the leaders with conveying their own (locally-ordered) proposals to the remaining processes, leaving the global ordering decision to a leaderless component.
+        Alea-BFT brings from partially-synchronous consensus protocols the insight of centralizing work on a rotating leader node.
+        However, it needs to address several challenges associated with this approach, namely the reliance on a single node, which must be replaced upon failure. This is achieved by rotating the leader after consensus slot, and only tasking the leaders with conveying their own (locally-ordered) proposals to the remaining processes, leaving the global ordering decision to a leaderless component.
     </p>
     <p>
-        Concretely, the protocol is divided into a broadcast component and an agreement component connected by a set of first-in-first-out queues.
-        The broadcast component pushes new requests/transactions (fruits in the animation) to the queues using a consistent broadcast primitive: each process appends requests to its respective queue present on all processes.
-        Simultaneously, the agreement component progresses in rounds and constantly tries to pop and deliver the heads of these queues.
-        At every round, it 1) picks a queue/proposer and 2) has all processes vote on whether to deliver its head using a binary agreement primitive.
-        Lastly, if the agreement component votes to deliver a queue whose head is not locally present, the affected process uses a simple recovery protocol to fetch this value from another process.
+        In more detail, the protocol is divided into a broadcast component and an agreement component, connected by a set of FIFO queues.
+        The broadcast component pushes new requests (depicted as fruits in the animation) to the queues using a consistent broadcast primitive. Then, each process appends requests to its respective queue.
+        In parallel, the agreement component constantly tries to pop and deliver the heads of these queues. To this end, this component uses a randomized binary agreement primitive to decide if it is safe to conclude a consensus instance.
+        Lastly, we require a recovery protocol to fetch missing requests in case a consensus instance succeeds at a node that did not receive the broadcast value.
     </p>
 
     <div id="alea-anim" class="container">
@@ -129,9 +128,9 @@
     </section>
 
     <section>
-    <h3 id="publications">Publications</h3>
+    <h3 id="publications">Publications and theses</h3>
     <div class="notice">
-        <h4 style="margin-top: 0;"><em>The</em> Alea-BFT paper</h4>
+        <h4 style="margin-top: 0;">Main Alea-BFT paper</h4>
 
         <a href="https://www.usenix.org/system/files/nsdi24-antunes.pdf">Alea-BFT: Practical Asynchronous Byzantine Fault Tolerance</a>
         <br>
@@ -139,7 +138,7 @@
         <br>
         USENIX Symposium on Networked Systems Design and Implementation, 2024
         <br>
-        Extended version complete with correctness proofs available <a href="https://arxiv.org/abs/2202.02071">on arXiv</a>
+        An extended version complete with correctness proofs is available <a href="https://arxiv.org/abs/2202.02071">on arXiv</a>
     </div>
 
     <ul>
@@ -155,7 +154,7 @@
         <li>
             <a href="https://scholar.tecnico.ulisboa.pt/records/tDwb4JDmOcOm7BCocf8m3r3YNG_cFbsjA8Ph">Integrating asynchronous BFT with Ethereum validator networks</a>
             <br>
-            <small>Adapts Alea-BFT for one-shot consensus, integrates it into SSV network's distributed Ethereum validator.</small>
+            <small>Adapts Alea-BFT for one-shot consensus, and integrates it with a distributed Ethereum validator.</small>
             <br>
             Matheus Guilherme Franco
             <br>
@@ -172,10 +171,10 @@
         </li>
     </ul>
 
-    <h3 id="articles">Articles and Blog Posts</h3>
+    <h3 id="articles">Real-world adoption (blog posts)</h3>
     <ul>
-        <li><cite><a href="https://blog.obol.tech/roadmap-the-distributed-validator-protocol/">The Distributed Validator Protocol Roadmap</a></cite> - Obol presents their roadmap including exploring asynchronous consensus (Alea-BFT) for their distributed validator, published by Oisín Kyne on February, 2024</li>
-        <li><cite><a href="https://ssv.network/blog/technology/ssv-into-the-future-asyncrounous-bft-protocols/">SSV Into The Future: Asynchronous BFT Protocols</a></cite> - SSV discusses how they plan to explore asynchronous consensus (namely Alea-BFT) to enhance their network, published by the SSV Network Team on November, 2022</li>
+        <li><cite><a href="https://blog.obol.tech/roadmap-the-distributed-validator-protocol/">The Distributed Validator Protocol Roadmap</a></cite> - Obol presents their roadmap including exploring asynchronous consensus (Alea-BFT) for their distributed validator, published by Oisín Kyne (CTO of Obol) on February, 2024</li>
+        <li><cite><a href="https://ssv.network/blog/technology/ssv-into-the-future-asyncrounous-bft-protocols/">SSV Into The Future: Asynchronous BFT Protocols</a></cite> - SSV plans to explore asynchronous consensus (namely Alea-BFT) to enhance their network, published by the SSV Network Team on November, 2022</li>
     </ul>
 
     <h3>Talks</h3>
@@ -184,9 +183,7 @@
             Talk on Alea-BFT at <a href="https://www.usenix.org/conference/nsdi24">2024 USENIX Symposium on Networked Systems Design and Implementation</a> by Diogo Antunes, April 2024
             <br>
             Video: <a href="https://www.youtube.com/watch?v=54cDdLn2_ME">YouTube</a>
-            <br>
-            Slides: <a href="javascript:alert('TODO')">Google Slides</a> <mark class="comment">AB: publica-se? (PDF fica partido sem trabalho mas podemos clonar os slides, tirar as anotações e  slides escondidos, e partilhar)</mark>
-        </li>
+                    </li>
     </ul>
 
     <h3 id="code">Code</h3>
@@ -214,14 +211,14 @@
             </tr>
             <tr>
                 <td><a href="https://github.com/abread/mir">Mir + Alea-BFT</a></td>
-                <td>Fork of the Mir Framework, which is expected to become a consensus layer for Filecoin, with support for Alea-BFT consensus (in the process of being upstreamed).</td>
+                <td>Fork of the Mir Framework - Mir is expected to become a consensus layer for Filecoin, and now includes support for Alea-BFT consensus (in the process of being upstreamed).</td>
                 <td>Go</td>
                 <td>Apache 2.0</td>
             </tr>
         </tbody>
     </table>
             <h3 id="contrib">Contributors</h3>
-<p>Alea-BFT is the joint effort of the following students and faculty at <a href="https://tecnico.ulisboa.pt/en">IST (Técnico-ULisboa)</a> and its computer science research lab, <a href="https://www.inesc-id.pt">INESC-ID</a>:</p>
+<p>Alea-BFT is the joint effort of the following students and faculty at <a href="https://tecnico.ulisboa.pt/en">IST - Lisbon</a> and its computer science research lab, <a href="https://www.inesc-id.pt">INESC-ID</a>:</p>
 <ul>
     <li>Afonso Oliveira</li>                                                                                                                                                                               
     <li>André Breda</li>
