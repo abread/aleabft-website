@@ -35,11 +35,24 @@
             }
         }
 
-        .ack {
+        #logo-fct {
             text-align: center;
         }
-        .ack img {
+        #logo-fct img {
             width: min(30ch, 75%);
+        }
+
+        #logos-contrib {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            align-items: baseline;
+            align-content: space-around;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        #logos-contrib img {
+            width: 20ch;
         }
 
         /* when wide enough, show all nav items with the same width */
@@ -223,25 +236,46 @@
             </tr>
         </tbody>
     </table>
-            <h3 id="contrib">Contributors</h3>
-<p>Alea-BFT is the joint effort of the following students and faculty at <a href="https://tecnico.ulisboa.pt/en">IST - Lisbon</a> and its computer science research lab, <a href="https://www.inesc-id.pt">INESC-ID</a>:</p>
-<ul>
-    <li>Afonso Oliveira</li>                                                                                                                                                                               
-    <li>André Breda</li>
-    <li>Diogo S. Antunes</li>
-    <li>Diogo Silva Santos</li>                                                                                                                                                                              
-    <li>Matheus Franco</li>
-    <li>Henrique Moniz and Rodrigo Rodrigues (faculty).</li>                                                                                                                                                                               
-   </ul>
-            </section>
-    <div class="ack">
+
+    <h3 id="contrib">Contributors</h3>
+    <p>Alea-BFT is the joint effort of the following students and faculty at <a href="https://tecnico.ulisboa.pt/en">IST - Lisbon</a> and its computer science research lab, <a href="https://www.inesc-id.pt">INESC-ID</a>:</p>
+
+    <ul>
+        <li>Afonso Oliveira</li>
+        <li>André Breda</li>
+        <li>Diogo S. Antunes</li>
+        <li>Diogo Silva Santos</li>
+        <li>Matheus Franco</li>
+        <li>Henrique Moniz and Rodrigo Rodrigues (faculty).</li>
+    </ul>
+
+    <div id="logos-contrib">
+        <a href="https://tecnico.ulisboa.pt/en">
+        <picture id="logo-ist">
+            <source srcset="assets/IST_A_RGB_NEG.png" media="(prefers-color-scheme: dark)" />
+            <img src="assets/IST_A_RGB_POS.png" alt="IST Logo" />
+        </picture>
+        </a>
+        <a href="https://www.inesc-id.pt/">
+        <picture id="logo-inesc">
+            <source srcset="assets/INESC-ID-new-logo_version-01B.png" media="(prefers-color-scheme: dark)" />
+            <img src="assets/INESC-ID-new-logo_version-01A.png" alt="INESC-ID Logo" />
+        </picture>
+        </a>
+    </div>
+    </section>
+
+    <div id="logo-fct">
         <p>
-            This research is supported by the Portuguese Foundation for Science and Technology (FCT).
+        This research is supported by the <a href="https://www.fct.pt/en/">Portuguese Foundation for Science and Technology (FCT)</a>.
         </p>
-        <picture id="fct-logo">
+
+        <a href="https://www.fct.pt/en/">
+        <picture>
             <source srcset="assets/2022_FCT_Logo_B_horizontal_branco.png" media="(prefers-color-scheme: dark)" />
             <img src="assets/2022_FCT_Logo_B_horizontal_preto.png" alt="FCT Logo" />
         </picture>
+        </a>
     </div>
 
     <footer>
